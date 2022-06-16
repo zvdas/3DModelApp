@@ -2,9 +2,13 @@ const express = require("express");
 
 const { mongoose } = require("./app/config/dbconfig");
 
-var threedmRoutes = require("./app/routes/threedmRoute");
+const threedmRoutes = require("./app/routes/threedmRoute");
+
+const path = __dirname + '/app/views/';
 
 const app = express();
+
+app.use(express.static(path));
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -15,7 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/models', threedmRoutes);
 
 app.get('/', (req, res) => {
-    res.json({message : "Welcome to the 3D Model Application"});
+    res.sendFile(path + "imdex.html")
+    // res.json({message : "Welcome to the 3D Model Application"});
 })
 
 app.listen(4000, ()=>{

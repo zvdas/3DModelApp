@@ -164,15 +164,19 @@ Steps:
     }
 
 18. Open src/app/model/model-upload and start editing model-upload.component.html file.
-    <div class="form-group">
-    <label for="name">Name</label>
-    <input [(ngModel)]="filename" type="text" class="form-control">
+    <div class="container col-8 my-5">
+        <div class="card bg-secondary p-3">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input [(ngModel)]="filename" type="text" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="file">File</label>
+                <input id="file" type="file" class="form-control" (change)="onFileChange($event)">
+            </div>
+            <button class="btn btn-primary my-2" (click)="submit()">Submit</button>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="file">File</label>
-        <input id="file" type="file" class="form-control" (change)="onFileChange($event)">
-    </div>
-    <button class="btn btn-primary" (click)="submit()">Submit</button>
     <app-model-list></app-model-list>
 
 19. Open src/app/model/model-list folder and start editing model-list.component.ts file.
@@ -208,22 +212,26 @@ Steps:
     }
 
 20. Open src/app/model/model-list and start editing model-list.component.html file.
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>S.No.</th>
-                <th>FileName</th>
-                <th>Operation</th>
-            </tr>
-        </thead>
-        <tbody *ngFor="let model of modelfile; let i = index">
-            <tr>
-                <td>{{ i+1 }}</td>
-                <td>{{ model.filename }}</td>
-                <td><button class="btn btn-primary" (click)="render(i)">Render</button></td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="container col-8">
+        <div class="card bg-secondary">
+            <table class="table table-hover table-striped text-center text-white">
+                <thead>
+                    <tr>
+                        <th scope="col">S.No.</th>
+                        <th scope="col">FileName</th>
+                        <th scope="col">Operation</th>
+                    </tr>
+                </thead>
+                <tbody *ngFor="let model of modelfile; let i = index">
+                    <tr>
+                        <th scope="row">{{ i+1 }}</th>
+                        <td>{{ model.filename }}</td>
+                        <td><button class="btn btn-primary" (click)="render(i)">Render</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 21. Install the Three.js library for rendering 3D models and add the type to package.json by typing the following commands
     npm install three
@@ -337,10 +345,28 @@ Steps:
     }
 
 23. Open src/app/model/model-render and start editing model-render.component.html file.
-    <button class="btn btn-primary" (click)="render()">Render</button>
-    <button class="btn btn-primary" (click)="return()">Return to List</button>
-    <h3>Once the render button is clicked, scroll up & down with mouse to zoom in & out and move  mouse to rotate the rendered object below</h3>
-    <canvas #canvas id="canvas" style="height: 100%; width: 100%;"></canvas>
+    <div class="container">
+        <div class="card bg-secondary m-5">
+            <div class="row text-center">
+                <div class="col-6 my-2">
+                    <button class="btn btn-primary" (click)="render()">Render</button>
+                </div>
+                <div class="col-6 my-2">
+                    <button class="btn btn-primary" (click)="return()">Return to List</button>
+                </div>
+            </div>
+            <div class="row text-center text-white">
+                <p>Once the render button is clicked, scroll up & down with mouse to zoom in & out and move  mouse to rotate the rendered object below</p>
+            </div>
+        </div>
+        
+        <canvas #canvas id="canvas" style="height: 100%; width: 100%;"></canvas>
+    </div>
+
+24. Add a background image by entering the URL in the styles.css file
+    body{
+        background-image: url('https://i.pinimg.com/564x/ef/ae/76/efae76f6c3f2b985090afa1f50900af8.jpg');
+    }
 
 BACKEND
 
@@ -496,8 +522,61 @@ Steps:
 
     module.exports = router;
 
-14. 
+Currently Angular & NodeJS work independently on ports 4200 & 4000 respectively.
+Objective : Integrate Angular & NodeJS
 
+Steps:
+1. Set the output directory to static folder
+    Open angular.json, add the "outputPath": "./static" option to the build target so that the production will be stored in static folder under project root directory.
 
-Set the output directory to static folder:
-Open angular.json, add the "outputPath": "./static" option to the build target so that the production will be stored in static folder under project root directory.
+2. Enter the following command
+    ng build
+
+3. Integrate Angular production with Node.js Project. In app folder of Node.js Express Project, create views folder.
+
+4. Copy all files from Angular static folder to app/views folder.
+
+5. Serve the Angular App with Express. Serve static files such as HTML files, CSS files and JavaScript files in app/views folder using the express.static() built-in middleware function. Edit the index.js file.
+
+6. deliver index.html file using res.sendFile().
+    const express = require("express");
+
+    const { mongoose } = require("./app/config/dbconfig");
+
+    const threedmRoutes = require("./app/routes/threedmRoute");
+
+    const path = __dirname + '/app/views/';
+
+    const app = express();
+
+    app.use(express.static(path));
+
+    // parse requests of content-type - application/json
+    app.use(express.json());
+
+    // parse requests of content-type - application/x-www-form-urlencoded
+    app.use(express.urlencoded({ extended: true }));
+
+    app.use('/models', threedmRoutes);
+
+    app.get('/', (req, res) => {
+        res.sendFile(path + "imdex.html")
+        // res.json({message : "Welcome to the 3D Model Application"});
+    })
+
+7. Run Node Express server & Angular on the same Port by entering the following in terminal
+    npm start
+
+8. Angular App will run on port 4000 with node.js. When refreshing, 404 error occurs. To handle error, pass optional parameter useHash as true value in app-routing.module.ts.
+    @NgModule({
+        imports: [RouterModule.forRoot(routes, {useHash: true})],
+        exports: [RouterModule]
+    })
+
+9. Run the ng build in terminal once again, delete the filoes from app/view and paste the files from static folder. The changes will be updated.
+
+DEPLOYMENT ON FIREBASE
+Objective: Host the application on Firebase with connection to Firestore
+
+Steps:
+1. 

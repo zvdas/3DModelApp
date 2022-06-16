@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
-mongoose.connect('mongodb://localhost:27017/threedm_db', (err) => {
+let url = 'mongodb://localhost:27017/threedm_db';
+
+mongoose.connect(url, (err) => {
     if(!err){
         console.log("Connection to MongoDB Successful");
     }else{
