@@ -8,7 +8,7 @@ import { Model } from '../classes/model';
 
 export class ModelcrService {
 
-  // API url
+  // JSON Server API URL
   baseApiUrl = "http://localhost:3000/model";
 
   //index for render

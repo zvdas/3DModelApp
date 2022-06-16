@@ -579,4 +579,6 @@ DEPLOYMENT ON FIREBASE
 Objective: Host the application on Firebase with connection to Firestore
 
 Steps:
-1. 
+1. Create a new project in console.firebase.google.com
+
+2. Add Firebase to the Angular Webapp, by first registering the app, setting up FIrebase hosting and copying the SDK settings in the environment.prod.ts file. Note: The file must be added to gitignore to ensure safety of deployment keys.
