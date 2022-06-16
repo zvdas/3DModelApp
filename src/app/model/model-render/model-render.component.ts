@@ -4,6 +4,7 @@ import { ModelcrService } from 'src/app/services/modelcr.service';
 import { AmbientLight, Color, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-model-render',
@@ -36,7 +37,7 @@ export class ModelRenderComponent implements OnInit/*, AfterViewInit*/ {
   modelfile = new Array<Model>();
   modelString = '';
 
-  constructor(private mcrs: ModelcrService) { }
+  constructor(private mcrs: ModelcrService, private router: Router) { }
 
   ngOnInit(): void {
     this.index = this.mcrs.setIndex();
@@ -106,5 +107,9 @@ export class ModelRenderComponent implements OnInit/*, AfterViewInit*/ {
     this.startRenderingLoop();
   }
   // */
+
+  return(){
+    this.router.navigate(['/']);
+  }
 
 }

@@ -28,27 +28,24 @@ Steps:
 7. Generate new service in app folder for model upload & retrieve
     ng g s services/modelcr
 
-8. Add ModelListComponent & ModelUploadComponent to exports array of @NgModule of model.module.ts file
-
-9. Open src/app folder and start editing app.component.html file
+8. Open src/app folder and start editing app.component.html file
     <router-outlet></router-outlet>
-    <app-model-upload></app-model-upload>
 
-10. Start the app on local server on default port 4200 and open in browser by using the following command
+9. Start the app on local server on default port 4200 and open in browser by using the following command
     ng serve --open
 
-11. Start a json server on localhost which will store the model using the following command
+10. Start a json server on localhost which will store the model using the following command
     json-server --watch .\src\app\files\model.json
 
-12. Start editing the model.json file
+11. Start editing the model.json file
     {
         "model": []
     }
 
-13. Generate a class using the following command
+12. Generate a class using the following command
     ng g cl classes/model
 
-14. Start editing the model.class.ts file
+13. Start editing the model.class.ts file
     export class Model {
         modelstring:string;
         filename:string;
@@ -59,12 +56,13 @@ Steps:
         }
     }
 
-15. Start editing the app-routing.module.ts file to add a route 'render' matched to component ModelRenderComponent
+14. Start editing the app-routing.module.ts file to add a route 'render' matched to component ModelRenderComponent
     import { NgModule } from '@angular/core';
     import { RouterModule, Routes } from '@angular/router';
     import { ModelRenderComponent } from './model/model-render/model-render.component';
 
     const routes: Routes = [
+    {path:'', component:ModelUploadComponent},        
     {path:'render', component:ModelRenderComponent}
     ];
 
@@ -75,9 +73,9 @@ Steps:
 
     export class AppRoutingModule { }
 
-16. import { HttpClientModule } from '@angular/common/http' in the app.module.ts file
+15. import { HttpClientModule } from '@angular/common/http' in the app.module.ts file
 
-17. Open src/app/services and start editing modelcr.service.ts file
+16. Open src/app/services and start editing modelcr.service.ts file
     import { HttpClient } from '@angular/common/http';
     import { Injectable } from '@angular/core';
     import { Model } from '../classes/model';
@@ -124,7 +122,7 @@ Steps:
     }
 
 
-18. Open src/app/model/model-upload folder and start editing model-upload.component.ts file
+17. Open src/app/model/model-upload folder and start editing model-upload.component.ts file
     import { Component, OnInit } from '@angular/core';
     import { ModelcrService } from 'src/app/services/modelcr.service';
 
@@ -165,7 +163,7 @@ Steps:
         }
     }
 
-19. Open src/app/model/model-upload and start editing model-upload.component.html file.
+18. Open src/app/model/model-upload and start editing model-upload.component.html file.
     <div class="form-group">
     <label for="name">Name</label>
     <input [(ngModel)]="filename" type="text" class="form-control">
@@ -177,7 +175,7 @@ Steps:
     <button class="btn btn-primary" (click)="submit()">Submit</button>
     <app-model-list></app-model-list>
 
-20. Open src/app/model/model-list folder and start editing model-list.component.ts file.
+19. Open src/app/model/model-list folder and start editing model-list.component.ts file.
     import { Component, OnInit } from '@angular/core';
     import { Router } from '@angular/router';
     import { Model } from 'src/app/classes/model';
@@ -209,7 +207,7 @@ Steps:
         }
     }
 
-21. Open src/app/model/model-list and start editing model-list.component.html file.
+20. Open src/app/model/model-list and start editing model-list.component.html file.
     <table class="table table-hover">
         <thead>
             <tr>
@@ -227,17 +225,18 @@ Steps:
         </tbody>
     </table>
 
-22. Install the Three.js library for rendering 3D models and add the type to package.json by typing the following commands
+21. Install the Three.js library for rendering 3D models and add the type to package.json by typing the following commands
     npm install three
     npm i --save-dev @types/three
 
-23. Open src/app/model/model-render folder and start editing model-render.component.ts file.
+22. Open src/app/model/model-render folder and start editing model-render.component.ts file.
     import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
     import { Model } from 'src/app/classes/model';
     import { ModelcrService } from 'src/app/services/modelcr.service';
     import { AmbientLight, Color, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
     import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
     import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+    import { Router } from '@angular/router';
 
     @Component({
     selector: 'app-model-render',
@@ -270,7 +269,7 @@ Steps:
         modelfile = new Array<Model>();
         modelString = '';
 
-        constructor(private mcrs: ModelcrService) { }
+        constructor(private mcrs: ModelcrService, private router: Router) { }
 
         ngOnInit(): void {
             this.index = this.mcrs.setIndex();
@@ -331,8 +330,14 @@ Steps:
             this.createScene();
             this.startRenderingLoop();
         }
+
+        return(){
+            this.router.navigate(['/']);
+        }
     }
 
-24. Open src/app/model/model-render and start editing model-render.component.html file.
+23. Open src/app/model/model-render and start editing model-render.component.html file.
     <button class="btn btn-primary" (click)="render()">Render</button>
+    <button class="btn btn-primary" (click)="return()">Return to List</button>
+    <h3>Once the render button is clicked, scroll up & down with mouse to zoom in & out and move  mouse to rotate the rendered object below</h3>
     <canvas #canvas id="canvas" style="height: 100%; width: 100%;"></canvas>
