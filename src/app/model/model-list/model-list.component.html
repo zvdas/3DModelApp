@@ -1,17 +1,16 @@
-<table class="table table-hover">
+<table class="table table-hover table-striped">
     <thead>
         <tr>
-            <th>S.No.</th>
-            <th>FileName</th>
-            <th>Operation</th>
+            <th scope="col">S.No.</th>
+            <th scope="col">FileName</th>
+            <th scope="col">Operation</th>
         </tr>
     </thead>
     <tbody *ngFor="let model of modelfile; let i = index">
         <tr>
-            <td>{{ i+1 }}</td>
+            <th scope="row">{{ i+1 }}</th>
             <td>{{ model.filename }}</td>
             <td><button class="btn btn-primary" (click)="render(i)">Render</button></td>
-            <!-- <td><img src="data:image/jpg;base64,{{model.modelstring}}"></td> -->
         </tr>
     </tbody>
 </table>
