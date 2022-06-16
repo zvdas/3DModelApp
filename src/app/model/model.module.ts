@@ -16,10 +16,6 @@ import { ModelRenderComponent } from './model-render/model-render.component';
   imports: [
     CommonModule,
     FormsModule
-  ], 
-  exports: [
-    ModelListComponent,
-    ModelUploadComponent
   ]
 })
 export class ModelModule { }

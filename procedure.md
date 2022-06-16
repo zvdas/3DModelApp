@@ -341,3 +341,163 @@ Steps:
     <button class="btn btn-primary" (click)="return()">Return to List</button>
     <h3>Once the render button is clicked, scroll up & down with mouse to zoom in & out and move  mouse to rotate the rendered object below</h3>
     <canvas #canvas id="canvas" style="height: 100%; width: 100%;"></canvas>
+
+BACKEND
+
+Objective : MongoDB connection to the current Angular app will be made with Node.js Express.
+
+Steps: 
+1. Create a folder called mongodb to store the backend files & folders.
+
+2. Initialize the directory by typing the following command
+    npm init -y
+
+3. Install the modules express, mongoose (MongoDB schema), nodemon (run uninterrupted) & multer (file upload) by typing the following command
+    npm install express mongoose nodemon multer
+
+4. Create a file index.js and edit the file
+    const express = require("express");
+
+    const app = express();
+
+    // parse requests of content-type - application/json
+    app.use(express.json());
+
+    // parse requests of content-type - application/x-www-form-urlencoded
+    app.use(express.urlencoded({ extended: true }));
+
+    app.get("/", (req, res) => {
+        res.json({message : "Welcome to the 3D Model Application"});
+    })
+
+    app.listen(4000, ()=>{
+        console.log("The Server is listening on port 4000");
+    })
+
+5. Start the server by typing the following command and open link in browser
+    npm start
+
+    Configure MongoDB database & Mongoose
+6. In the app folder, create a separate config folder for configuration with db.config.js file and edit the file
+    const mongoose = require("mongoose");
+
+    mongoose.connect('mongodb://localhost:27017/threedm_db', (err) => {
+        if(!err){
+            console.log("Connection to MongoDB Successful");
+        }else{
+            console.log(`Connection to MongoDB Failed with error : ${JSON.stringify(err, undefined, 2)}`);
+        }
+    })
+
+    module.exports = mongoose;
+
+7. Define the Mongoose model in the threedModel.js file in app/models folder
+    const mongoose = require("mongoose");
+
+    var schema = mongoose.Schema({
+        modelstring: { type: String },
+        filename: { type: String }
+    }, {
+        timestamps : true
+    });
+
+    schema.method("toJSON", function(){
+        const { __v, _id, ...object } = this.toObject();
+        object.id = _id;
+        return object;
+    })
+
+    var threedm = mongoose.model("model", schema);
+
+    module.exports = { threedm };
+
+8. Mongoose model supports all CRUD functions, hence don't have to be entered separately. Inside app/controllers folder, create threedmController.js with the Read function
+    const { threedm } = require("../models/threedmModel");
+
+    //Retrieve all the models from the database
+    exports.getAll = (req, res) => {
+        threedm.find((err, docs) => {
+            if(!err){
+                res.send(docs);
+            }else{
+                console.log(`Error retrieving 3D model list : ${JSON.stringify(err, undefined, 2)}`);
+            }
+        });
+    }
+
+9. Inside app/routes folder, create threedmRoute.js with the Read function
+    const threedmController = require("../controllers/threedmController");
+
+    const express = require("express");
+
+    const router = express.Router();
+
+    router.get("/", threedmController.getAll);
+
+    router.post("/", threedmController.create);
+
+    module.exports = router;
+
+10. Add the connect function to the index.js file
+    const express = require("express");
+
+    const { mongoose } = require("./app/config/dbconfig");
+
+    var threedmRoutes = require("./app/routes/threedmRoute");
+
+    const app = express();
+
+    // parse requests of content-type - application/json
+    app.use(express.json());
+
+    // parse requests of content-type - application/x-www-form-urlencoded
+    app.use(express.urlencoded({ extended: true }));
+
+    app.use('/models', threedmRoutes);
+
+    app.get('/', (req, res) => {
+        res.json({message : "Welcome to the 3D Model Application"});
+    })
+
+    app.listen(4000, ()=>{
+        console.log("The Server is listening on port 4000");
+    })
+
+11. Create a file multerconfig.js for configuring multer for uploading files
+    const multer = require("multer");
+
+    exports.upload = multer({ });
+
+12. Inside app/controllers folder, add the Create function to threedmController.js
+    const { threedm } = require("../models/threedmModel");
+
+    // Create a new model (upload as string)
+    exports.sendOne = (req, res) => {
+        var threed =  new threedm({modelstring: req.file.buffer.toString('base64'), filename: req.body.filename});
+        threed.save((err, doc) => {
+            if(!err){
+                res.send(doc)
+            }else{
+                console.log(`Error sending 3D model list : ${JSON.stringify(err, undefined, 2)}`);
+            }
+        })
+    }
+
+13. Inside app/routes folder add the Create function to threedmRoute.js
+    const threedmController = require("../controllers/threedmController");
+
+    const multerConfig = require("../config/multerconfig");
+
+    const express = require("express");
+
+    const router = express.Router();
+
+    router.post("/", multerConfig.upload.single('modelstring'), threedmController.sendOne);
+
+    module.exports = router;
+
+14. 
+
+
+Set the output directory to static folder:
+Open angular.json, add the "outputPath": "./static" option to the build target so that the production will be stored in static folder under project root directory.
