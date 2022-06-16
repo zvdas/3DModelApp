@@ -3,13 +3,14 @@
         <tr>
             <th>S.No.</th>
             <th>FileName</th>
-            <!-- <th>File</th> -->
+            <th>Operation</th>
         </tr>
     </thead>
     <tbody *ngFor="let model of modelfile; let i = index">
         <tr>
             <td>{{ i+1 }}</td>
             <td>{{ model.filename }}</td>
+            <td><button class="btn btn-primary" (click)="render(i)">Render</button></td>
             <!-- <td><img src="data:image/jpg;base64,{{model.modelstring}}"></td> -->
         </tr>
     </tbody>

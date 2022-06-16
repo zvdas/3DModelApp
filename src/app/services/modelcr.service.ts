@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Model } from '../classes/model';
 
 @Injectable({
@@ -9,8 +8,11 @@ import { Model } from '../classes/model';
 
 export class ModelcrService {
 
-   // API url
-   baseApiUrl = "http://localhost:3000/model";
+  // API url
+  baseApiUrl = "http://localhost:3000/model";
+
+  //index for render
+  index!:number;
 
   constructor(private http: HttpClient) { }
 
@@ -27,6 +29,16 @@ export class ModelcrService {
   //retrieve from database
   receiveModelFile(){
     return this.http.get<Model[]>(this.baseApiUrl);
+  }
+
+  //get index from model-list
+  getIndex(i: number){
+    this.index = i;
+  }
+
+  // send index to model-render
+  setIndex(){
+    return this.index;
   }
 
 }

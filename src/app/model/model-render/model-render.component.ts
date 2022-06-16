@@ -1,31 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { Model } from 'src/app/classes/model';
 import { ModelcrService } from 'src/app/services/modelcr.service';
 
 @Component({
-  selector: 'app-model-list',
-  templateUrl: './model-list.component.html',
-  styleUrls: ['./model-list.component.css']
+  selector: 'app-model-render',
+  templateUrl: './model-render.component.html',
+  styleUrls: ['./model-render.component.css']
 })
 
-export class ModelListComponent implements OnInit {
+export class ModelRenderComponent implements OnInit {
 
+  index!:number;
   modelfile = new Array<Model>();
 
-  constructor(private mcrs: ModelcrService, private router: Router) { }
+  constructor(private mcrs: ModelcrService) { }
 
   ngOnInit(): void {
+    this.index = this.mcrs.setIndex();
+    
     this.mcrs.receiveModelFile().subscribe(
       (response) => {this.modelfile = response},
       (error) => console.log(error),
       () => console.log("completed")
-    ) 
-  }
-
-  render(i: number){
-    this.mcrs.getIndex(i);
-    this.router.navigate(['/render']);
+    )
   }
 
 }

@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { ModelListComponent } from './model-list/model-list.component';
 import { ModelUploadComponent } from './model-upload/model-upload.component';
 import { FormsModule } from '@angular/forms';
+import { ModelRenderComponent } from './model-render/model-render.component';
 
 
 
 @NgModule({
   declarations: [
     ModelListComponent,
-    ModelUploadComponent
+    ModelUploadComponent,
+    ModelRenderComponent
   ],
   imports: [
     CommonModule,
