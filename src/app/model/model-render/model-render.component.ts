@@ -43,6 +43,7 @@ export class ModelRenderComponent implements OnInit/*, AfterViewInit*/ {
     this.index = this.mcrs.setIndex();
     
     this.getModelList();
+
   }
 
   getModelList(){

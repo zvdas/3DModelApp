@@ -1,6 +1,14 @@
+const dotenv = require("dotenv");
+
+dotenv.config({ path: '.env' });
+
 const mongoose = require("mongoose");
 
-let url = 'mongodb://localhost:27017/threedm_db';
+// local
+// let url = 'mongodb://localhost:27017/threedm_db';
+
+// shared cluster
+var url = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_CLUSTER}.mongodb.net/?retryWrites=true&w=majority`;
 
 mongoose.connect(url, (err) => {
     if(!err){

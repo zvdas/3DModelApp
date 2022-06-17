@@ -14,8 +14,10 @@ export class ModelcrService {
   baseApiUrl = "http://localhost:3000/model";
   */
 
-  // API URL (for MongoDB)
+  /*
+  // API URL (for MongoDB local)
   baseApiUrl = "http://localhost:4000/models";
+  */
 
   //index for render
   index!:number;
@@ -27,7 +29,6 @@ export class ModelcrService {
     /*
     // API Server
     this.http.post(this.baseApiUrl, {"modelstring": modelString, "filename": filename}).subscribe(
-    // this.http.post<Model>(this.baseApiUrl, [modelString, filename]).subscribe(  
       (response) => console.log(response),
       (error) => console.log(error),
       () => console.log("completed")

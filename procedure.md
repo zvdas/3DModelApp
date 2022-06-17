@@ -409,8 +409,14 @@ Steps:
     Configure MongoDB database & Mongoose
 6. In the app folder, create a separate config folder for configuration with db.config.js file and edit the file
     const mongoose = require("mongoose");
+    
+    //local
+    var url = 'mongodb://localhost:27017/threedm_db';
 
-    mongoose.connect('mongodb://localhost:27017/threedm_db', (err) => {
+    //shared cluster
+    var url = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_CLUSTER}.mongodb.net/?retryWrites=true&w=majority`;
+
+    mongoose.connect(url, (err) => {
         if(!err){
             console.log("Connection to MongoDB Successful");
         }else{
