@@ -376,7 +376,7 @@ BACKEND
 Objective : MongoDB connection to the current Angular app will be made with Node.js Express.
 
 Steps: 
-1. Create a folder called mongodb to store the backend files & folders.
+1. Create a folder called mongodb-nodejs to store the backend files & folders.
 
 2. Initialize the directory by typing the following command
     npm init -y
@@ -530,7 +530,7 @@ Objective : Integrate Angular & NodeJS
 
 Steps:
 1. Set the output directory to static folder
-    Open angular.json, add the "outputPath": "./static" option to the build target so that the production will be stored in static folder under project root directory.
+    Open angular.json, add the "outputPath": "./static" option to the build target so that the production will be stored in static folder under project root directory. (Alternatively, the default, dist/<project_name> will also do.)
 
 2. Enter the following command
     ng build
@@ -577,6 +577,30 @@ Steps:
     })
 
 9. Run the ng build in terminal once again, delete the filoes from app/view and paste the files from static folder. The changes will be updated.
+
+10. In order to consume API requests from Angular App, CORS (Cross Origin Resource Sharing), which allows cross application communication. Install cors using the following command
+    npm i cors
+
+11. Add cors to the index.js file. This will allow requests from any port number or domain.
+    const express = require("express");
+
+    const { mongoose } = require("./app/config/dbconfig");
+
+    const cors = require("cors");
+
+    const threedmRoutes = require("./app/routes/threedmRoute");
+
+    const path = __dirname + '/app/views/';
+
+    const app = express();
+
+    app.use(express.static(path));
+
+    // parse requests of content-type - application/json
+    app.use(express.json());
+
+    app.use(cors({ origin: 'http://localhost:4000' }));
+
 
 DEPLOYMENT ON FIREBASE
 Objective: Host the application on Firebase with connection to Firestore
@@ -735,7 +759,7 @@ Steps:
     What file should be used for Database Rules?
         (database.rules.json)   default
     What do you want to use as your public directory?
-        static         
+        static                  (or dist/<app name> if default)
     Configure as a single-page app (rewrite all URLs to /index.html)? (y/N)
         N
 

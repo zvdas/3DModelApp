@@ -34,6 +34,7 @@ export class ModelcrService {
       .then((response) => console.log(response))
       .catch((error) => console.log(error))
       .finally(() => console.log("completed"))
+
   }
 
   //retrieve from database

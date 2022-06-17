@@ -2,6 +2,8 @@ const express = require("express");
 
 const { mongoose } = require("./app/config/dbconfig");
 
+const cors = require("cors");
+
 const threedmRoutes = require("./app/routes/threedmRoute");
 
 const path = __dirname + '/app/views/';
@@ -12,6 +14,8 @@ app.use(express.static(path));
 
 // parse requests of content-type - application/json
 app.use(express.json());
+
+app.use(cors({ origin: 'http://localhost:4000' }));
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
