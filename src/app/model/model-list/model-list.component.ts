@@ -21,7 +21,7 @@ export class ModelListComponent implements OnInit {
 
   getModelList(){
     /*
-    // From JSON API
+    // From API
      this.mcrs.receiveModelFile().subscribe(
       (response) => { this.modelfile = response; },
       (error) => console.log(error),
@@ -29,12 +29,14 @@ export class ModelListComponent implements OnInit {
     );
     */
    
+    // /*
     //From firestore 
     return this.mcrs.receiveModelFile().subscribe(
       (response) => {this.modelfile = response.map(res=>res.payload.doc.data()) as Model[]},
       (error) => console.log(error),
       () => console.log("completed")
     )
+    // */
   }
 
   render(i: number){

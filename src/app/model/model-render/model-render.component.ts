@@ -47,7 +47,7 @@ export class ModelRenderComponent implements OnInit/*, AfterViewInit*/ {
 
   getModelList(){
     /*
-    // From JSON API
+    // From API
      this.mcrs.receiveModelFile().subscribe(
       (response) => { this.modelfile = response; },
       (error) => console.log(error),
@@ -55,12 +55,14 @@ export class ModelRenderComponent implements OnInit/*, AfterViewInit*/ {
     );
     */
    
+    // /*
     //From firestore 
     return this.mcrs.receiveModelFile().subscribe(
       (response) => {this.modelfile = response.map(res=>res.payload.doc.data()) as Model[]},
       (error) => console.log(error),
       () => console.log("completed")
     )
+    // */
   }
   
   //create the scene

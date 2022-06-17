@@ -86,7 +86,7 @@ Steps:
 
     export class ModelcrService {
 
-        // API url
+        // API URL (JSON Server)
         baseApiUrl = "http://localhost:3000/model";
 
         //index for render
@@ -502,7 +502,12 @@ Steps:
 
     // Create a new model (upload as string)
     exports.sendOne = (req, res) => {
-        var threed =  new threedm({modelstring: req.file.buffer.toString('base64'), filename: req.body.filename});
+        if(!req.body.modelstring){
+            var modelString = req.file.buffer.toString('base64');
+        }else{
+            var modelString = req.body.modelstring;
+        }
+        var threed =  new threedm({modelstring: modelString, filename: req.body.filename});
         threed.save((err, doc) => {
             if(!err){
                 res.send(doc)
@@ -599,7 +604,8 @@ Steps:
     // parse requests of content-type - application/json
     app.use(express.json());
 
-    app.use(cors({ origin: 'http://localhost:4000' }));
+    app.use(cors({ origin: 'http://localhost:4000' })); //(or 4200, depending on the port number of request maker)
+Using HTTPClient, post & get requests can be made directly from the Angular application to MongoDB, using baseApiUrl = "http://localhost:4000/models";
 
 
 DEPLOYMENT ON FIREBASE
@@ -654,8 +660,11 @@ Steps:
 
     export class ModelcrService {
 
-    // JSON Server API URL
+    // API URL (JSON Server)
     baseApiUrl = "http://localhost:3000/model";
+
+    // API URL (for MongoDB)
+    baseApiUrl = "http://localhost:4000/models";
 
     //index for render
     index!:number;
@@ -664,7 +673,7 @@ Steps:
 
     // send to database
     uploadModelFile(modelString: string, filename: string){
-        // JSON Server API       
+        // API Server
         this.http.post(this.baseApiUrl, {"modelstring": modelString, "filename": filename}).subscribe(
         // this.http.post<Model>(this.baseApiUrl, [modelString, filename]).subscribe(  
         (response) => console.log(response),
@@ -681,10 +690,10 @@ Steps:
 
     //retrieve from database
     receiveModelFile(){
-        //JSON Server API
+        // API Server
         return this.http.get<Model[]>(this.baseApiUrl);
 
-        //Firestore
+        // Firestore
         return this.fs.collection('model').snapshotChanges();
     }
 
@@ -724,7 +733,7 @@ Steps:
 
     getModelList(){
         /*
-        // From JSON API
+        // API Server
         this.mcrs.receiveModelFile().subscribe(
         (response) => { this.modelfile = response; },
         (error) => console.log(error),
@@ -732,7 +741,7 @@ Steps:
         );
         */
     
-        //From firestore 
+        // From firestore 
         return this.mcrs.receiveModelFile().subscribe(
         (response) => {this.modelfile = response.map(res=>res.payload.doc.data()) as Model[]},
         (error) => console.log(error),

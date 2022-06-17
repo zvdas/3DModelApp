@@ -9,8 +9,13 @@ import { Model } from '../classes/model';
 
 export class ModelcrService {
 
-  // JSON Server API URL
+  /*
+  // API URL (JSON Server)
   baseApiUrl = "http://localhost:3000/model";
+  */
+
+  // API URL (for MongoDB)
+  baseApiUrl = "http://localhost:4000/models";
 
   //index for render
   index!:number;
@@ -20,7 +25,7 @@ export class ModelcrService {
   // send to database
   uploadModelFile(modelString: string, filename: string){
     /*
-    // JSON Server API       
+    // API Server
     this.http.post(this.baseApiUrl, {"modelstring": modelString, "filename": filename}).subscribe(
     // this.http.post<Model>(this.baseApiUrl, [modelString, filename]).subscribe(  
       (response) => console.log(response),
@@ -29,23 +34,26 @@ export class ModelcrService {
     )
     */
 
+    // /*
     // Firestore
     this.fs.collection('model').add({"modelstring": modelString, "filename": filename})
       .then((response) => console.log(response))
       .catch((error) => console.log(error))
       .finally(() => console.log("completed"))
-
+    // */
   }
 
   //retrieve from database
   receiveModelFile(){
     /*
-    //JSON Server API
+    // API Server
     return this.http.get<Model[]>(this.baseApiUrl);
     */
-
+    
+    // /*
     //Firestore
     return this.fs.collection('model').snapshotChanges();
+    // */
   }
 
   //get index from model-list
