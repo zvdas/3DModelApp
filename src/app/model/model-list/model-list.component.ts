@@ -16,11 +16,25 @@ export class ModelListComponent implements OnInit {
   constructor(private mcrs: ModelcrService, private router: Router) { }
 
   ngOnInit(): void {
-    this.mcrs.receiveModelFile().subscribe(
-      (response) => {this.modelfile = response},
+    this.getModelList();
+  }
+
+  getModelList(){
+    /*
+    // From JSON API
+     this.mcrs.receiveModelFile().subscribe(
+      (response) => { this.modelfile = response; },
       (error) => console.log(error),
       () => console.log("completed")
-    ) 
+    );
+    */
+   
+    //From firestore 
+    return this.mcrs.receiveModelFile().subscribe(
+      (response) => {this.modelfile = response.map(res=>res.payload.doc.data()) as Model[]},
+      (error) => console.log(error),
+      () => console.log("completed")
+    )
   }
 
   render(i: number){

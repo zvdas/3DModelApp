@@ -138,6 +138,7 @@ Steps:
         filename:string='';
         modelString:string='';
         file!: File;
+        msg:string='';
 
         // Inject service 
         constructor(private mcrs: ModelcrService) { }
@@ -160,6 +161,7 @@ Steps:
         //send to modelcr.service.ts
         submit(){
             this.mcrs.uploadModelFile(this.modelString, this.filename);
+            this.msg='File uploaded successfully';
         }
     }
 
@@ -175,6 +177,7 @@ Steps:
                 <input id="file" type="file" class="form-control" (change)="onFileChange($event)">
             </div>
             <button class="btn btn-primary my-2" (click)="submit()">Submit</button>
+            <p class="text-white text-center">{{ msg }}</p>
         </div>
     </div>
     <app-model-list></app-model-list>
@@ -582,3 +585,159 @@ Steps:
 1. Create a new project in console.firebase.google.com
 
 2. Add Firebase to the Angular Webapp, by first registering the app, setting up FIrebase hosting and copying the SDK settings in the environment.prod.ts file. Note: The file must be added to gitignore to ensure safety of deployment keys.
+
+3. Import the packages installed earlier and the environment.ts file into the app.module.ts file. Initialize the AngularFireModule with the firebaseConfig.
+    import { NgModule } from '@angular/core';
+    import { BrowserModule } from '@angular/platform-browser';
+    import { HttpClientModule } from '@angular/common/http';
+    import { AngularFireModule } from '@angular/fire/compat';
+    import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+
+    import { AppRoutingModule } from './app-routing.module';
+    import { AppComponent } from './app.component';
+    import { ModelModule } from './model/model.module';
+    import { environment } from 'src/environments/environment.prod';
+
+    @NgModule({
+    declarations: [
+        AppComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        ModelModule,
+        HttpClientModule,
+        AngularFireModule.initializeApp(environment.firebaseConfig),
+        AngularFirestoreModule
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
+    })
+
+    export class AppModule { }
+
+4. Create a database in Cloud Firestore, start in test mode. Create a collection and add a blank document with id.
+
+5. Set up Firestore in the modelcr.service.ts file
+    import { HttpClient } from '@angular/common/http';
+    import { Injectable } from '@angular/core';
+    import { AngularFirestore } from "@angular/fire/compat/firestore";
+    import { Model } from '../classes/model';
+
+    @Injectable({
+    providedIn: 'root'
+    })
+
+    export class ModelcrService {
+
+    // JSON Server API URL
+    baseApiUrl = "http://localhost:3000/model";
+
+    //index for render
+    index!:number;
+
+    constructor(private http: HttpClient, private fs: AngularFirestore) { }
+
+    // send to database
+    uploadModelFile(modelString: string, filename: string){
+        // JSON Server API       
+        this.http.post(this.baseApiUrl, {"modelstring": modelString, "filename": filename}).subscribe(
+        // this.http.post<Model>(this.baseApiUrl, [modelString, filename]).subscribe(  
+        (response) => console.log(response),
+        (error) => console.log(error),
+        () => console.log("completed")
+        )
+
+        // Firestore
+        this.fs.collection('model').add({"modelstring": modelString, "filename": filename})
+        .then((response) => console.log(response))
+        .catch((error) => console.log(error))
+        .finally(() => console.log("completed"))
+    }
+
+    //retrieve from database
+    receiveModelFile(){
+        //JSON Server API
+        return this.http.get<Model[]>(this.baseApiUrl);
+
+        //Firestore
+        return this.fs.collection('model').snapshotChanges();
+    }
+
+    //get index from model-list
+    getIndex(i: number){
+        this.index = i;
+    }
+
+    // send index to model-render
+    setIndex(){
+        return this.index;
+    }
+
+    }
+
+6. In the model-list & model-render component.ts file, make a change to the response received to subscribe to adjust the schema of the firestore database.
+    import { Component, OnInit } from '@angular/core';
+    import { Router } from '@angular/router';
+    import { Model } from 'src/app/classes/model';
+    import { ModelcrService } from 'src/app/services/modelcr.service';
+
+    @Component({
+    selector: 'app-model-list',
+    templateUrl: './model-list.component.html',
+    styleUrls: ['./model-list.component.css']
+    })
+
+    export class ModelListComponent implements OnInit {
+
+    modelfile = new Array<Model>();
+
+    constructor(private mcrs: ModelcrService, private router: Router) { }
+
+    ngOnInit(): void {
+        this.getModelList();
+    }
+
+    getModelList(){
+        /*
+        // From JSON API
+        this.mcrs.receiveModelFile().subscribe(
+        (response) => { this.modelfile = response; },
+        (error) => console.log(error),
+        () => console.log("completed")
+        );
+        */
+    
+        //From firestore 
+        return this.mcrs.receiveModelFile().subscribe(
+        (response) => {this.modelfile = response.map(res=>res.payload.doc.data()) as Model[]},
+        (error) => console.log(error),
+        () => console.log("completed")
+        )
+    }
+
+5. Install the Firebase Tools using Firebase CLI
+    npm install -g firebase-tools
+
+6. Login and Initialize Firebase project using Firebase CLI
+    firebase login
+
+7. Initialize the Firebase project by running below command.
+    firebase init
+
+8. Select the following two options
+    Firestore: Deploy rules and create indexes for Firestore
+    Hosting: Configure and deploy Firebase Hosting sites
+
+8. Fill in the following properties
+    Select a default Firebase project for this directory
+        select name of the app
+    What file should be used for Database Rules?
+        (database.rules.json)   default
+    What do you want to use as your public directory?
+        static         
+    Configure as a single-page app (rewrite all URLs to /index.html)? (y/N)
+        N
+
+9. Deploy the Angular App to Firebase Hosting
+    firebase deploy --only "hosting,firestore"

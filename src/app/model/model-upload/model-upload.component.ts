@@ -13,6 +13,7 @@ export class ModelUploadComponent implements OnInit {
   filename:string='';
   modelString:string='';
   file!: File;
+  msg:string='';
 
   // Inject service 
   constructor(private mcrs: ModelcrService) { }
@@ -35,6 +36,7 @@ export class ModelUploadComponent implements OnInit {
   //send to modelcr.service.ts
   submit(){
     this.mcrs.uploadModelFile(this.modelString, this.filename);
+    this.msg='File uploaded successfully';
   }
 
 }
