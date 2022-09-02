@@ -1,45 +1,50 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+# frontend
+
 # Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
+frontend_angular_v1/dist
+frontend_angular_v1/tmp
+frontend_angular_v1/out-tsc
+frontend_angular_v1/bazel-out
 
 # Node
-/node_modules
-npm-debug.log
-yarn-error.log
+frontend_angular_v1/node_modules
+frontend_angular_v1/npm-debug.log
+frontend_angular_v1yarn-error.log
 
 # IDEs and editors
-.idea/
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
+frontend_angular_v1/.idea/
+frontend_angular_v1/.project
+frontend_angular_v1/.classpath
+frontend_angular_v1/.c9/
+frontend_angular_v1/*.launch
+frontend_angular_v1/.settings/
+frontend_angular_v1/*.sublime-workspace
 
 # Visual Studio Code
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.history/*
+frontend_angular_v1/.vscode
+frontend_angular_v1/!.vscode/settings.json
+frontend_angular_v1/!.vscode/tasks.json
+frontend_angular_v1/!.vscode/launch.json
+frontend_angular_v1/!.vscode/extensions.json
+frontend_angular_v1/.history/*
 
 # Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
+frontend_angular_v1/.angular/cache
+frontend_angular_v1/.sass-cache/
+frontend_angular_v1/connect.lock
+frontend_angular_v1/coverage
+frontend_angular_v1/libpeerconnection.log
+frontend_angular_v1/testem.log
+frontend_angular_v1/typings
 
 # System files
-.DS_Store
-Thumbs.db
-.env
-src/environments/environment.ts
-src/environments/environment.prod.ts
+frontend_angular_v1/.DS_Store
+frontend_angular_v1/Thumbs.db
+frontend_angular_v1/.env
+frontend_angular_v1/src/environments/environment.ts
+frontend_angular_v1/src/environments/environment.prod.ts
+
+# backend
+backend_nodejs_v1/node_modules
