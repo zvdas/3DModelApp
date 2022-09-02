@@ -1,0 +1,53 @@
+<div class="container bg-secondary text-white px-5 py-4">
+    <h1 class="text-center">Welcome to 3D Model Rendering Site</h1>
+    <p>This is a food blogging space where enthusiats can upload, list and render 3D models.</p>
+    <p>Kindly sign up with a valid email and password and login. Upon successful login, the following tasks can be performed</p>
+    <ul>
+        <li>Upload, list & render models</li>
+    </ul>
+
+    <div class="card-center bg bg-dark p-3">
+        <h2 class="text-center">Are you a new user?</h2>
+
+        <div class="row justify-content-center d-flex align-items-center">
+            <div class="col-auto">
+                <button class="btn btn-primary" (click)="signUpOrLogin()">click here</button>
+            </div>
+            <div class="col-auto">
+                <p *ngIf="newUser; then new else existing"></p>
+                <ng-template #new><b>New User</b></ng-template>
+                <ng-template #existing><b>Existing User</b></ng-template>
+            </div>
+        </div>
+
+        <div class="card bg bg-secondary m-3">
+            <div *ngIf="newUser==true"  class="row justify-content-center">
+                <h3 class="text-center">Sign up</h3>
+                <div class="col-auto">
+                    <input type="text" name="forEmail" class="form-control mb-3" [(ngModel)]="email" placeholder="email@example.com"/>
+                </div>
+                <div class="col-auto">
+                    <input type="password" name="forPassword" class="form-control mb-3" [(ngModel)]="password" placeholder="Password"/>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary" (click)="onSignup()">sign up</button>
+                </div>
+                <p class="text-center">{{ message }}</p>
+            </div>
+
+            <div *ngIf="newUser==false" class="row justify-content-center">
+                <h3 class="text-center">Login</h3>
+                <div class="col-auto">
+                    <input type="text" name="forEmail" class="form-control mb-3" [(ngModel)]="email" placeholder="email@example.com"/>
+                </div> 
+                <div class="col-auto">
+                    <input type="password" name="forPassword" class="form-control mb-3" [(ngModel)]="password" placeholder="Password"/>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary" (click)="onLogin()">login</button>
+                </div>
+                <p class="text-center">{{ message }}</p>
+            </div>
+        </div>
+    </div>
+</div>
